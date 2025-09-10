@@ -200,7 +200,7 @@ const App: React.FC = () => {
                     <div 
                         ref={fullscreenRef} 
                         onClick={handleFullscreen}
-                        className={`relative aspect-[3/2] bg-gray-200 rounded-lg shadow-md cursor-pointer group overflow-hidden w-full max-w-lg mx-auto ${isFullscreen ? 'fullscreen-container' : ''}`}
+                        className="relative aspect-[3/2] bg-gray-200 rounded-lg shadow-md cursor-pointer group overflow-hidden w-full max-w-lg mx-auto"
                         aria-label="태극기 전체 화면으로 보기"
                         role="button"
                         tabIndex={0}

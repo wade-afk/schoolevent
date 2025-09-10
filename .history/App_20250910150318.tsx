@@ -162,30 +162,9 @@ const App: React.FC = () => {
             fullscreenRef.current.requestFullscreen().catch(err => {
                 alert(`전체 화면 모드를 실행할 수 없습니다: ${err.message} (${err.name})`);
             });
-            setIsFullscreen(true);
         } else {
             document.exitFullscreen();
-            setIsFullscreen(false);
         }
-    }, []);
-
-    // 전체화면 상태 감지
-    useEffect(() => {
-        const handleFullscreenChange = () => {
-            setIsFullscreen(!!document.fullscreenElement);
-        };
-
-        document.addEventListener('fullscreenchange', handleFullscreenChange);
-        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-
-        return () => {
-            document.removeEventListener('fullscreenchange', handleFullscreenChange);
-            document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-            document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-            document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
-        };
     }, []);
 
     return (
@@ -200,7 +179,7 @@ const App: React.FC = () => {
                     <div 
                         ref={fullscreenRef} 
                         onClick={handleFullscreen}
-                        className={`relative aspect-[3/2] bg-gray-200 rounded-lg shadow-md cursor-pointer group overflow-hidden w-full max-w-lg mx-auto ${isFullscreen ? 'fullscreen-container' : ''}`}
+                        className="relative aspect-[3/2] bg-gray-200 rounded-lg shadow-md cursor-pointer group overflow-hidden w-full max-w-lg mx-auto"
                         aria-label="태극기 전체 화면으로 보기"
                         role="button"
                         tabIndex={0}
