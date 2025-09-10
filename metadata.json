@@ -1,0 +1,5 @@
+{
+  "name": "학교행사 음원 재생프로그램",
+  "description": "An application to manage and play audio-visual elements for school ceremonies, including the national flag and anthems.",
+  "requestFramePermissions": []
+}
