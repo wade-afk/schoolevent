@@ -23,7 +23,7 @@ interface ControlButtonProps {
 const ControlButton: React.FC<ControlButtonProps> = ({ label, onClick, isPlaying }) => {
     const Icon = isPlaying ? StopIcon : PlayIcon;
     
-    const baseClasses = "w-full h-24 flex items-center justify-center gap-3 text-sm font-bold py-4 px-4 rounded-xl transition-all duration-300 ease-in-out shadow-md hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2";
+    const baseClasses = "w-full flex items-center justify-center gap-3 text-lg font-bold py-4 px-6 rounded-xl transition-all duration-300 ease-in-out shadow-md hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2";
     
     const stateClasses = isPlaying
         ? "bg-rose-600 text-white border border-rose-600 hover:bg-rose-700 focus:ring-rose-500"
@@ -34,8 +34,8 @@ const ControlButton: React.FC<ControlButtonProps> = ({ label, onClick, isPlaying
             onClick={onClick}
             className={`${baseClasses} ${stateClasses}`}
         >
-            <Icon className="w-5 h-5 flex-shrink-0" />
-            <span className="text-center leading-tight whitespace-pre-line">{label}</span>
+            <Icon className="w-6 h-6" />
+            <span>{label}</span>
         </button>
     );
 };
@@ -47,7 +47,6 @@ const App: React.FC = () => {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [schoolSongFile, setSchoolSongFile] = useState<File | null>(null);
     const [schoolSongUrl, setSchoolSongUrl] = useState<string>('');
-    const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const fullscreenRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -97,126 +96,6 @@ const App: React.FC = () => {
             }
         };
     }, [schoolSongUrl]);
-
-    // 전체화면 상태 감지
-    useEffect(() => {
-        const handleFullscreenChange = () => {
-            setIsFullscreen(!!document.fullscreenElement);
-        };
-
-        document.addEventListener('fullscreenchange', handleFullscreenChange);
-        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-
-        return () => {
-            document.removeEventListener('fullscreenchange', handleFullscreenChange);
-            document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-            document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-            document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
-        };
-    }, []);
-
-    // 키보드 단축키 처리
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            // F1~F4 키로 음원 재생
-            switch (e.key) {
-                case 'F1':
-                    e.preventDefault();
-                    if (audioRef.current) {
-                        const audio = audioRef.current;
-                        if (nowPlaying === AudioTrack.Salute) {
-                            audio.pause();
-                            setNowPlaying(null);
-                            setIsPlaying(false);
-                        } else {
-                            if (!audio.paused) {
-                                audio.pause();
-                            }
-                            audio.src = ASSET_PATHS[AudioTrack.Salute];
-                            audio.play().catch(e => console.error("Audio play failed:", e));
-                            setNowPlaying(AudioTrack.Salute);
-                            setCurrentTime(0);
-                        }
-                    }
-                    break;
-                case 'F2':
-                    e.preventDefault();
-                    if (audioRef.current) {
-                        const audio = audioRef.current;
-                        if (nowPlaying === AudioTrack.Anthem) {
-                            audio.pause();
-                            setNowPlaying(null);
-                            setIsPlaying(false);
-                        } else {
-                            if (!audio.paused) {
-                                audio.pause();
-                            }
-                            audio.src = ASSET_PATHS[AudioTrack.Anthem];
-                            audio.play().catch(e => console.error("Audio play failed:", e));
-                            setNowPlaying(AudioTrack.Anthem);
-                            setCurrentTime(0);
-                        }
-                    }
-                    break;
-                case 'F3':
-                    e.preventDefault();
-                    if (audioRef.current) {
-                        const audio = audioRef.current;
-                        if (nowPlaying === AudioTrack.Tribute) {
-                            audio.pause();
-                            setNowPlaying(null);
-                            setIsPlaying(false);
-                        } else {
-                            if (!audio.paused) {
-                                audio.pause();
-                            }
-                            audio.src = ASSET_PATHS[AudioTrack.Tribute];
-                            audio.play().catch(e => console.error("Audio play failed:", e));
-                            setNowPlaying(AudioTrack.Tribute);
-                            setCurrentTime(0);
-                        }
-                    }
-                    break;
-                case 'F4':
-                    e.preventDefault();
-                    if (audioRef.current) {
-                        const audio = audioRef.current;
-                        if (nowPlaying === AudioTrack.SchoolSong) {
-                            audio.pause();
-                            setNowPlaying(null);
-                            setIsPlaying(false);
-                        } else {
-                            if (!audio.paused) {
-                                audio.pause();
-                            }
-                            if (schoolSongUrl) {
-                                audio.src = schoolSongUrl;
-                                audio.play().catch(e => console.error("Audio play failed:", e));
-                                setNowPlaying(AudioTrack.SchoolSong);
-                                setCurrentTime(0);
-                            } else {
-                                fileInputRef.current?.click();
-                            }
-                        }
-                    }
-                    break;
-                case 'Escape':
-                    // 전체화면 모드에서만 ESC 키 처리
-                    if (document.fullscreenElement) {
-                        e.preventDefault();
-                        document.exitFullscreen();
-                    }
-                    break;
-            }
-        };
-
-        document.addEventListener('keydown', handleKeyDown);
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [nowPlaying, schoolSongUrl]);
 
     const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -283,32 +162,27 @@ const App: React.FC = () => {
                 // 전체화면 모드 진입
                 await fullscreenRef.current.requestFullscreen();
                 
-                // 전체화면 모드 진입 후 브라우저 UI 제거
+                // 전체화면 모드 진입 후 잠시 대기하여 브라우저 UI가 사라지도록 함
                 setTimeout(() => {
-                    // 마우스 클릭 이벤트 방지
-                    const handleClick = (e: MouseEvent) => {
-                        e.preventDefault();
-                        e.stopPropagation();
+                    // ESC 키 이벤트 리스너 추가
+                    const handleKeyDown = (e: KeyboardEvent) => {
+                        if (e.key === 'Escape') {
+                            document.exitFullscreen();
+                        }
                     };
-                    
-                    // 컨텍스트 메뉴 방지
-                    const handleContextMenu = (e: MouseEvent) => {
-                        e.preventDefault();
-                    };
-                    
-                    document.addEventListener('click', handleClick, true);
-                    document.addEventListener('contextmenu', handleContextMenu);
+                    document.addEventListener('keydown', handleKeyDown);
                     
                     // 전체화면 종료 시 이벤트 리스너 제거
                     const handleFullscreenChange = () => {
                         if (!document.fullscreenElement) {
-                            document.removeEventListener('click', handleClick, true);
-                            document.removeEventListener('contextmenu', handleContextMenu);
+                            document.removeEventListener('keydown', handleKeyDown);
                             document.removeEventListener('fullscreenchange', handleFullscreenChange);
                         }
                     };
                     document.addEventListener('fullscreenchange', handleFullscreenChange);
-                }, 200);
+                }, 100);
+            } else {
+                document.exitFullscreen();
             }
         } catch (err: any) {
             alert(`전체 화면 모드를 실행할 수 없습니다: ${err.message} (${err.name})`);
@@ -321,61 +195,48 @@ const App: React.FC = () => {
                 <header className="text-center">
                     <h1 className="text-4xl font-extrabold text-gray-800">학교 행사 진행</h1>
                     <p className="text-gray-500 mt-2">원활한 행사 진행을 위한 보조 도구입니다.</p>
-                    <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                        <p className="text-sm text-blue-700 font-medium">키보드 단축키</p>
-                        <div className="mt-2 text-xs text-blue-600">
-                            <div className="flex flex-wrap justify-center gap-4">
-                                <span>F1: 국기에 대한 경례</span>
-                                <span>F2: 애국가 제창</span>
-                                <span>F3: 순국선열 및 호국영령에 대한 묵념</span>
-                                <span>F4: 교가 제창</span>
-                            </div>
-                        </div>
-                    </div>
                 </header>
 
                 <main className="space-y-8">
-                    <div className="relative w-full max-w-lg mx-auto">
-                        {/* 태극기 이미지 */}
-                        <div 
-                            ref={fullscreenRef} 
-                            className="relative aspect-[3/2] bg-gray-200 rounded-lg shadow-md overflow-hidden"
-                        >
-                            <img 
-                                src={ASSET_PATHS.flag} 
-                                alt="Taegeukgi" 
-                                className="w-full h-full object-contain"
-                            />
-                            
+                    <div 
+                        ref={fullscreenRef} 
+                        onClick={handleFullscreen}
+                        className="relative aspect-[3/2] bg-gray-200 rounded-lg shadow-md cursor-pointer group overflow-hidden w-full max-w-lg mx-auto"
+                        aria-label="태극기 전체 화면으로 보기"
+                        role="button"
+                        tabIndex={0}
+                    >
+                        <img 
+                            src={ASSET_PATHS.flag} 
+                            alt="Taegeukgi" 
+                            className="w-full h-full object-contain"
+                        />
+                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
+                            <div className="text-center">
+                                <FullscreenIcon className="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 mx-auto mb-2" />
+                                <p className="text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    전체화면으로 보기
+                                </p>
+                            </div>
                         </div>
-                        
-                        {/* 전체화면 버튼 */}
-                        <button
-                            onClick={handleFullscreen}
-                            className="absolute top-3 right-3 bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-800 p-2 rounded-lg shadow-lg transition-all duration-200 flex items-center gap-2 border border-gray-200"
-                            aria-label="태극기 전체 화면으로 보기"
-                        >
-                            <FullscreenIcon className="w-4 h-4" />
-                            <span className="text-xs font-medium hidden sm:inline">전체화면</span>
-                        </button>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
+                    <div className="flex flex-col justify-center space-y-4 max-w-lg mx-auto">
                        {Object.values(AudioTrack).map(track => (
-                            <div key={track} className="space-y-2">
+                            <div key={track}>
                                 <ControlButton
                                     label={audioTrackDetails[track].label}
                                     onClick={() => togglePlay(track)}
                                     isPlaying={nowPlaying === track}
                                 />
                                 {track === AudioTrack.SchoolSong && (
-                                    <div className="text-center">
+                                    <div className="mt-2 text-center">
                                         {schoolSongFile ? (
-                                            <p className="text-xs text-green-600 font-medium">
+                                            <p className="text-sm text-green-600 font-medium">
                                                 ✓ {schoolSongFile.name}
                                             </p>
                                         ) : (
-                                            <p className="text-xs text-gray-500">
+                                            <p className="text-sm text-gray-500">
                                                 MP3 파일을 선택해주세요
                                             </p>
                                         )}

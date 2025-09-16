@@ -35,7 +35,7 @@ const ControlButton: React.FC<ControlButtonProps> = ({ label, onClick, isPlaying
             className={`${baseClasses} ${stateClasses}`}
         >
             <Icon className="w-5 h-5 flex-shrink-0" />
-            <span className="text-center leading-tight whitespace-pre-line">{label}</span>
+            <span className="text-center leading-tight">{label}</span>
         </button>
     );
 };

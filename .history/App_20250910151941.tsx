@@ -23,7 +23,7 @@ interface ControlButtonProps {
 const ControlButton: React.FC<ControlButtonProps> = ({ label, onClick, isPlaying }) => {
     const Icon = isPlaying ? StopIcon : PlayIcon;
     
-    const baseClasses = "w-full h-24 flex items-center justify-center gap-3 text-sm font-bold py-4 px-4 rounded-xl transition-all duration-300 ease-in-out shadow-md hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2";
+    const baseClasses = "w-full flex items-center justify-center gap-3 text-lg font-bold py-4 px-6 rounded-xl transition-all duration-300 ease-in-out shadow-md hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2";
     
     const stateClasses = isPlaying
         ? "bg-rose-600 text-white border border-rose-600 hover:bg-rose-700 focus:ring-rose-500"
@@ -34,8 +34,8 @@ const ControlButton: React.FC<ControlButtonProps> = ({ label, onClick, isPlaying
             onClick={onClick}
             className={`${baseClasses} ${stateClasses}`}
         >
-            <Icon className="w-5 h-5 flex-shrink-0" />
-            <span className="text-center leading-tight whitespace-pre-line">{label}</span>
+            <Icon className="w-6 h-6" />
+            <span>{label}</span>
         </button>
     );
 };
@@ -323,13 +323,11 @@ const App: React.FC = () => {
                     <p className="text-gray-500 mt-2">원활한 행사 진행을 위한 보조 도구입니다.</p>
                     <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
                         <p className="text-sm text-blue-700 font-medium">키보드 단축키</p>
-                        <div className="mt-2 text-xs text-blue-600">
-                            <div className="flex flex-wrap justify-center gap-4">
-                                <span>F1: 국기에 대한 경례</span>
-                                <span>F2: 애국가 제창</span>
-                                <span>F3: 순국선열 및 호국영령에 대한 묵념</span>
-                                <span>F4: 교가 제창</span>
-                            </div>
+                        <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-blue-600">
+                            <div>F1: 국기에 대한 경례</div>
+                            <div>F2: 애국가 제창</div>
+                            <div>F3: 순국선열 및 호국영령에 대한 묵념</div>
+                            <div>F4: 교가 제창</div>
                         </div>
                     </div>
                 </header>
@@ -360,22 +358,22 @@ const App: React.FC = () => {
                         </button>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
+                    <div className="flex flex-col justify-center space-y-4 max-w-lg mx-auto">
                        {Object.values(AudioTrack).map(track => (
-                            <div key={track} className="space-y-2">
+                            <div key={track}>
                                 <ControlButton
                                     label={audioTrackDetails[track].label}
                                     onClick={() => togglePlay(track)}
                                     isPlaying={nowPlaying === track}
                                 />
                                 {track === AudioTrack.SchoolSong && (
-                                    <div className="text-center">
+                                    <div className="mt-2 text-center">
                                         {schoolSongFile ? (
-                                            <p className="text-xs text-green-600 font-medium">
+                                            <p className="text-sm text-green-600 font-medium">
                                                 ✓ {schoolSongFile.name}
                                             </p>
                                         ) : (
-                                            <p className="text-xs text-gray-500">
+                                            <p className="text-sm text-gray-500">
                                                 MP3 파일을 선택해주세요
                                             </p>
                                         )}
